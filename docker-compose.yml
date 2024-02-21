@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+    bbdd:
+      image: mysql
+      ports: 
+            - "3306:3306"
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_DATABASE: lamp_db
+            MYSQL_PASSWORD: alexis1234
+            MYSQL_USER: alexis
+            MYSQL_ROOT_PASSWORD: alexis1234
+        volumes:
+            - ./estu/AppWeb/sql:/docker-entrypoint-initdb.d
+            - ./conf:/etc/mysql/conf.d
+            - mivolumen:/var/lib/mysql
+        networks:
+            - default
+    Web:
+        image: php:8.2apache 
+        ports: 
+            - "90:80"
+        volumes:
+            - ./estu/AppWeb/src:/var/www/html
+        links:
+            - bbdd
+        networks:
+            - default
+    phpmyadmin:
+        image: phpmyadmin
+        links: 
+            - basededades
+        ports:
+            - 9000:80
+        environment:
+            MYSQL_USER: alexis
+            MYSQL_PASSWORD: alexis1234
+            MYSQL_ROOT_PASSWORD: alexis1234
